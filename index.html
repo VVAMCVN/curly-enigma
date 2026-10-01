@@ -23,44 +23,53 @@
         display: block;
         pointer-events: none;
     }
+
+    #start {
+        position: fixed;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(0,0,0,.65);
+        color: white;
+        font: bold 20px Arial;
+        cursor: pointer;
+        z-index: 10;
+    }
 </style>
 
-</head><body><!-- VIDEO MP4 -->
-<video id="video" autoplay loop playsinline>
+</head><body><video id="video" autoplay muted loop playsinline>
     <source src="video.mp4" type="video/mp4">
 </video>
 
-<!-- NHẠC MP3 -->
-<audio id="music" autoplay loop>
+<audio id="music" loop>
     <source src="music.mp3" type="audio/mpeg">
 </audio>
+
+<div id="start">▶ CHẠM ĐỂ BẮT ĐẦU</div>
 
 <script>
     const video = document.getElementById("video");
     const music = document.getElementById("music");
+    const start = document.getElementById("start");
 
-    video.muted = false;
-    video.volume = 1;
-    music.volume = 1;
+    start.addEventListener("click", async () => {
+        video.muted = true;
+        await video.play();
+        await music.play();
 
-    // Tự phát ngay khi trang mở
-    video.play().catch(() => {});
-    music.play().catch(() => {});
+        start.style.display = "none";
+    });
 
-    // Không cho video pause
+    // Không cho video bị pause
     video.addEventListener("pause", () => {
-        video.play().catch(() => {});
+        video.play();
     });
 
-    // Không cho nhạc pause
-    music.addEventListener("pause", () => {
-        music.play().catch(() => {});
-    });
-
-    // Video lặp
+    // Nếu video bị dừng vì lý do nào đó, phát lại
     video.addEventListener("ended", () => {
         video.currentTime = 0;
-        video.play().catch(() => {});
+        video.play();
     });
 </script>
 
